@@ -123,9 +123,7 @@ Benefits:
 
 Example Config Server:
 
-```
-http://localhost:9296
-```
+
 
 ---
 
