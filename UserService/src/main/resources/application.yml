@@ -1,0 +1,78 @@
+server:
+  port: 8081
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+    url: jdbc:mysql://localhost:3306/user
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  application:
+    name: USERSERVICE
+  config:
+    import: optional:configserver:http://localhost:8085
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://integrator-4443484.okta.com/oauth2/default
+      client:
+        registration:
+          my-internal-client:
+            provider: okta
+            authorization-grant-type: client-credentials
+            scope: internal
+            client-id: 0oa10lmxx8f9apRXU698
+            client-secret: nQTrF2KRDpJ4P-jxWNwU6_Gzlv8GDcDuXtPVCNxg4mQqX0uV7LAYWGsnCRdmxwRp
+        provider:
+          okta:
+            issuer-uri: https://integrator-4443484.okta.com/oauth2/default
+
+#this is used for actuator configuration
+
+management:
+  health:
+    circuit breakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+
+#resillience4j configuration(ye basic configuration hai)
+resilience4j:
+  circuitbreaker:
+    instances:
+      ratingHotelBreaker:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        failureRateThreshold: 50
+        waitDurationInOpenState: 6s
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+  #retry configuration (2-3 bar service ko call kiya agr fail ho gya then don't retry)
+  retry:
+    instances:
+      ratingHotelBreaker:
+        max-attempts: 3
+        wait-duration: 5s
+
+  ratelimiter:
+    instances:
+      userRatingHotel:
+        timeout-duration: 2s
+        limit-refresh-period: 2s
+        limit-for-period: 2
+okta:
+  oauth2:
+    issuer: https://integrator-4443484.okta.com/oauth2/default
+    audience: api://default
