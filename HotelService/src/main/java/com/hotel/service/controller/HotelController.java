@@ -1,6 +1,7 @@
 package com.hotel.service.controller;
 
 import com.hotel.service.entities.Hotel;
+import com.hotel.service.entities.Rating;
 import com.hotel.service.service.HotelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -40,5 +41,10 @@ public class HotelController {
         hotelService.deleteById(hotelId);
         return ResponseEntity.ok("Hotel Entity is Deleted Successfully");
 
+    }
+
+    @GetMapping("/{hotelId}/ratings")
+    public ResponseEntity<List<Rating>> getHotelRatings(@PathVariable String hotelId) {
+        return ResponseEntity.ok(hotelService.getHotelRatings(hotelId));
     }
 }

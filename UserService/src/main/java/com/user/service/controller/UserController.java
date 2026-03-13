@@ -5,6 +5,7 @@ import com.user.service.entities.User;
 import com.user.service.exceptions.ResourceNotFoundException;
 import com.user.service.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,6 @@ public class UserController {
 
     private final UserService userService;
 
-
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
         return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
@@ -36,17 +36,25 @@ public class UserController {
     }
 
 
-    @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
-        return ResponseEntity.ok(users);
-    }
+//    @GetMapping
+//    public ResponseEntity<List<User>> getAllUsers() {
+//        List<User> users = userService.getAllUsers();
+//        return ResponseEntity.ok(users);
+//    }
 
+@GetMapping
+public ResponseEntity<List<User>> getAllUsers(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "5") int size,
+        @RequestParam(defaultValue = "name") String sort
+) {
+    Page<User> usersPage = userService.getAllUsers(page, size, sort);
+    return ResponseEntity.ok(usersPage.getContent());
+}
 
     @DeleteMapping("/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable String userId) {
         userService.deleteById(userId);
         return ResponseEntity.ok("User deleted successfully");
     }
-
 }

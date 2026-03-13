@@ -13,7 +13,7 @@
 		<relativePath/>
 	</parent>
 
-	<groupId>com.user.service</groupId>
+	<groupId>com.userService.service</groupId>
 	<artifactId>UserService</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>UserService</name>

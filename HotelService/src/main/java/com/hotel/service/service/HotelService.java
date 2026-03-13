@@ -1,6 +1,7 @@
 package com.hotel.service.service;
 
 import com.hotel.service.entities.Hotel;
+import com.hotel.service.entities.Rating;
 
 import java.util.List;
 
@@ -16,4 +17,6 @@ public interface HotelService {
     List<Hotel> getAllHotels();
 
     void deleteById(String hotelId);
+
+    List<Rating> getHotelRatings(String hotelId);
 }

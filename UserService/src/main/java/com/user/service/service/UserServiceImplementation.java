@@ -12,6 +12,10 @@ import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -41,11 +45,28 @@ public class UserServiceImplementation implements UserService {
         return userRepository.save(user);
     }
 
-    @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
 
+    @Override
+    public Page<User> getAllUsers(int page, int size, String sort) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
+        Page<User> users = userRepository.findAll(pageable);
+        users.forEach(user -> {
+            List<Rating> ratings = ratingService.getRatings(user.getUserId());
+            if (ratings != null) {
+                ratings.forEach(rating -> {
+                    try {
+                        Hotel hotel = hotelService.getHotel(rating.getHotelId());
+                        rating.setHotel(hotel);
+                    } catch (Exception e) {
+                        rating.setHotel(null);
+                    }
+                });
+            }
+            user.setRatings(ratings);
+        });
+
+        return users;
+    }
     //    @Override
 //    public User getUserById(String userId) {
 //        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));

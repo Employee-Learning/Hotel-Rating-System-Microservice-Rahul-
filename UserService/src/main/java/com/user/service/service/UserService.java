@@ -1,6 +1,7 @@
 package com.user.service.service;
 
 import com.user.service.entities.User;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ public interface UserService {
     User createUser(User user);
 
     // get all user
-     List<User> getAllUsers();
+    Page<User> getAllUsers(int page, int size, String sort);
 
     //get single user
     User getUserById(String id);

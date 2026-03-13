@@ -19,4 +19,7 @@ public class Hotel {
 
     @Column(name = "about")
     private String about;
+
+    @Transient
+    private Double averageRating;
 }

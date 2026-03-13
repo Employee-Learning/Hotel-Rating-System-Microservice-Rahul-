@@ -1,5 +1,6 @@
 package com.user.service.entities;
 
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,4 +16,7 @@ public class Hotel {
     private String hotelName;
     private String location;
     private String about;
+    @Transient
+    private Double averageRating;
 }
+
